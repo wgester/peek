@@ -6,10 +6,16 @@ define(function(require, exports, module) {
     var ImageSurface     = require('famous/surfaces/ImageSurface');
     var SequentialLayout = require('famous/views/SequentialLayout');
 
+    var Week         = require('./WeekView')
+
     function App() {
         View.apply(this, arguments);
+
+        this.weekViews = [];
+
         _createHeader.call(this);
-    }
+        _createWeekView.call(this);
+    };
 
     App.prototype = Object.create(View.prototype);
     App.prototype.constructor = App;
@@ -23,7 +29,23 @@ define(function(require, exports, module) {
             content: 'img/header1.png'
         });
         this.add(this.header);
-    }
+    };
+
+    _createWeekView = function() {
+        this.layout = new SequentialLayout();
+        var layoutModifier = new Modifier({
+            transform: Transform.translate(0, 0.105 * window.innerHeight, 0)
+        });
+        for (var i = 0; i < 5; i++) {
+            var weekView = new View();
+            var week = new Week();
+            var weekModifier = new Modifier();
+            weekView._add(weekModifier).add(week);
+            this.weekViews.push(weekView);
+        }
+        this.layout.sequenceFrom(this.weekViews);
+        this._add(layoutModifier).add(this.layout);
+    };
 
 
     module.exports = App;
