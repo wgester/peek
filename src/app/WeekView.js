@@ -94,7 +94,6 @@ define(function(require, exports, module) {
     };
 
     _addWeekDayText = function(data) {
-        console.log(data)
         var weekDay = new Surface({
             content: data.weekDay,
             properties: {
