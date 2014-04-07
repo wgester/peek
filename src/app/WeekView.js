@@ -5,8 +5,11 @@ define(function(require, exports, module) {
     var View             = require('famous/core/View');
 
 
-    function App() {
+    function App(date) {
         View.apply(this, arguments);
+
+        this.date = date;
+
         _createBackground.call(this);
         _addBorder.call(this);
         _addDays.call(this);
@@ -16,6 +19,16 @@ define(function(require, exports, module) {
     App.prototype.constructor = App;
 
     App.DEFAULT_OPTIONS = {};
+
+    var weekDay = {
+        0: 'MON',
+        1: 'TUE',
+        2: 'WED',
+        3: 'THU',
+        4: 'FRI',
+        5: 'SAT',
+        6: 'SUN'
+    };
 
     _createBackground = function() {
         this.background = new Surface({
@@ -50,25 +63,36 @@ define(function(require, exports, module) {
                 transform: Transform.translate(i * window.innerWidth/7, 0, 0)
             });
             
-            _addDayText.call(day, i);
+            _addDateText.call(this, {dayView: day, i: i});
             this._add(dayModifier).add(daySurface);
             this._add(day);
         }
     };
 
-    _addDayText = function(i) {
-            var date = new Surface({
-                content: '0' + i + '',
-                properties: {
-                    fontSize: '1.5em'
-                },
-                size: [0,0]
-            });
-            var dateModifier = new Modifier({
-                transform: Transform.translate(0.25 * (window.innerWidth / 7) + i * window.innerWidth / 7, 0.12 * window.innerHeight, 0)
-            })
-            this._add(dateModifier).add(date);
+    _addDateText = function(data) {
+        if (this.date < 10) {
+            var date = '0' + this.date;
+        } else {
+            var date = this.date;
+        }
+        var date = new Surface({
+            content: date,
+            properties: {
+                fontSize: '1.5em'
+            },
+            size: [0,0]
+        });
+        var dateModifier = new Modifier({
+            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.11 * window.innerHeight, 0)
+        });
+        data.dayView._add(dateModifier).add(date);
+        if (this.date > 30) {
+            this.date = 0;
+        }
+        this.date += 1;
     };
+
+
 
     App.prototype.getSize = function getSize() {
         return [window.innerWidth, 0.1911 * window.innerHeight];

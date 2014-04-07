@@ -13,6 +13,8 @@ define(function(require, exports, module) {
 
         this.weekViews = [];
 
+        this.date = 31;
+
         _createHeader.call(this);
         _createWeekView.call(this);
     };
@@ -38,10 +40,14 @@ define(function(require, exports, module) {
         });
         for (var i = 0; i < 5; i++) {
             var weekView = new View();
-            var week = new Week();
+            var week = new Week(this.date);
             var weekModifier = new Modifier();
             weekView._add(weekModifier).add(week);
             this.weekViews.push(weekView);
+            if (this.date > 30) {
+                this.date = 0;
+            }
+            this.date += 7;
         }
         this.layout.sequenceFrom(this.weekViews);
         this._add(layoutModifier).add(this.layout);
