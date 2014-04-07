@@ -1,14 +1,15 @@
 define(function(require, exports, module) {
-    var Surface          = require('famous/core/Surface');
-    var Modifier         = require('famous/core/Modifier');
-    var Transform        = require('famous/core/Transform');
-    var View             = require('famous/core/View');
-    var ImageSurface     = require('famous/surfaces/ImageSurface');
-    var SequentialLayout = require('famous/views/SequentialLayout');
+    var Surface           = require('famous/core/Surface');
+    var Modifier          = require('famous/core/Modifier');
+    var Transform         = require('famous/core/Transform');
+    var View              = require('famous/core/View');
+    var ImageSurface      = require('famous/surfaces/ImageSurface');
+    var SequentialLayout  = require('famous/views/SequentialLayout');
 
-    var Week         = require('./WeekView')
+    var Week              = require('./WeekView')
+    var AccordionLayout   = require('./AccordionLayout');
 
-    var RenderNode = require('famous/core/RenderNode');
+    var RenderNode        = require('famous/core/RenderNode');
 
     function App() {
         View.apply(this, arguments);
@@ -24,10 +25,10 @@ define(function(require, exports, module) {
         _addTaskViews.call(this);
         _addTaskViews.call(this);
         _createAccordion.call(this);
-        this.taskModifiers[0].setSize([undefined, 100], {duration: 0})
-        this.taskModifiers[1].setTransform(Transform.rotateX(-2), {duration: 3000})
+        // this.taskModifiers[0].setSize([undefined, 100], {duration: 0})
+        // this.taskModifiers[1].setTransform(Transform.rotateX(-Math.PI * 0.5), {duration: 1000})
         // this.taskModifiers[0].setTransform(Transform.aboutOrigin([0,100,0], Transform.rotateX(Math.PI * 0.5)), {duration: 3000})
-        this.taskModifiers[0].setTransform(Transform.rotateX(Math.PI * 0.5), {duration: 1000});
+        // this.taskModifiers[0].setTransform(Transform.rotateX(Math.PI * 0.5), {duration: 1000});
     };
 
     App.prototype = Object.create(View.prototype);
@@ -65,16 +66,13 @@ define(function(require, exports, module) {
     };
 
     _createAccordion = function() {
-        console.log(this.taskModifiers)
-        this.accordion = new SequentialLayout();
+        this.accordion = new AccordionLayout();
         this.accordion.sequenceFrom(this.tasks);
 
         this.weekViews.splice(1, 0, this.accordion);
     };
 
     _addTaskViews = function() {
-        var newView = new View();
-        
         var taskView = new View();
         var task = new Surface({
             size : [window.innerWidth, 100],
@@ -85,18 +83,12 @@ define(function(require, exports, module) {
                 fontSize: '4em'
             }
         });
-        var sizeModifier = new Modifier({
-            size: [undefined, 100]
-        })
-        var taskModifier = new Modifier({
-            origin: [0, 1]
-        });
-        taskView.add(taskModifier).add(task);
-        newView._add(sizeModifier).add(taskView)
 
-        this.taskModifiers.push(taskModifier);
+        taskView._add(task);
 
-        this.tasks.push(newView);
+        // this.taskModifiers.push(taskModifier);
+
+        this.tasks.push(taskView);
 
     };
 
