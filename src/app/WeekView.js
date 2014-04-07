@@ -64,6 +64,7 @@ define(function(require, exports, module) {
             });
             
             _addDateText.call(this, {dayView: day, i: i});
+            _addWeekDayText.call(this, {dayView: day, weekDay: weekDay[i], i: i});
             this._add(dayModifier).add(daySurface);
             this._add(day);
         }
@@ -92,6 +93,20 @@ define(function(require, exports, module) {
         this.date += 1;
     };
 
+    _addWeekDayText = function(data) {
+        console.log(data)
+        var weekDay = new Surface({
+            content: data.weekDay,
+            properties: {
+                fontSize: '0.7em'
+            },
+            size: [0,0]
+        });
+        var weekDayModifier = new Modifier({
+            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.08 * window.innerHeight, 0)
+        });
+        data.dayView._add(weekDayModifier).add(weekDay);
+    };
 
 
     App.prototype.getSize = function getSize() {
