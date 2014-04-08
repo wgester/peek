@@ -29,6 +29,8 @@ define(function(require, exports, module) {
         // this.taskModifiers[1].setTransform(Transform.rotateX(-Math.PI * 0.5), {duration: 1000})
         // this.taskModifiers[0].setTransform(Transform.aboutOrigin([0,100,0], Transform.rotateX(Math.PI * 0.5)), {duration: 3000})
         // this.taskModifiers[0].setTransform(Transform.rotateX(Math.PI * 0.5), {duration: 1000});
+        console.log(this.accordion)
+        this.accordion.open();
     };
 
     App.prototype = Object.create(View.prototype);
@@ -86,7 +88,6 @@ define(function(require, exports, module) {
 
         taskView._add(task);
 
-        // this.taskModifiers.push(taskModifier);
 
         this.tasks.push(taskView);
 

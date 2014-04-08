@@ -10,32 +10,39 @@ define(function(require, exports, module) {
         SequentialLayout.apply(this, arguments);
 
         this._items = [];
+        this._modifiers = [];
     };
 
 
-    AccordionLayout.prototype.sequenceFrom = function sequenceFrom(items) {
+
+    AccordionLayout.prototype = Object.create(SequentialLayout.prototype);
+
+    AccordionLayout.prototype.sequenceFrom = function(items) {
         if (items instanceof Array) {
             var axis = 0;
             for (var i = 0; i < items.length; i++) {
                 var containerView = new View();
-                var originModifier = new Modifier({
-                    origin: [0, axis]
-                });
                 var sizeModifier = new Modifier({
                     size: [undefined, items[i].getSize()[1]]
                 });
-                containerView._add(originModifier).add(sizeModifier);
-                this._items.push(items[i]);
+                var originModifier = new Modifier({
+                    origin: [0, axis]
+                });
+                containerView._add(sizeModifier).add(originModifier).add(items[i]);
+                this._modifiers.push(originModifier);
+                this._items.push(containerView);
                 if (!axis) axis = 1;
                 if (axis)  axis = 0;
-                console.log(this._items)
             }
             this._items = new ViewSequence(this._items)
         }
         return this;
     };
 
-    AccordionLayout.prototype = Object.create(SequentialLayout.prototype);
+    AccordionLayout.prototype.open = function() {
+        this._modifiers[0].setTransform(Transform.rotateX(-Math.PI * 0.5), {duration: 1000})
+    };
+
 
     module.exports = AccordionLayout;
 });
