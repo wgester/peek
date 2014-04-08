@@ -5,7 +5,7 @@ define(function(require, exports, module) {
     var View             = require('famous/core/View');
 
 
-    function App(date) {
+    function NewWeek(date) {
         View.apply(this, arguments);
 
         this.date = date;
@@ -15,10 +15,10 @@ define(function(require, exports, module) {
         _addDays.call(this);
     };
 
-    App.prototype = Object.create(View.prototype);
-    App.prototype.constructor = App;
+    NewWeek.prototype = Object.create(View.prototype);
+    NewWeek.prototype.constructor = NewWeek;
 
-    App.DEFAULT_OPTIONS = {};
+    NewWeek.DEFAULT_OPTIONS = {};
 
     var weekDay = {
         0: 'MON',
@@ -110,10 +110,10 @@ define(function(require, exports, module) {
     };
 
 
-    App.prototype.getSize = function getSize() {
+    NewWeek.prototype.getSize = function getSize() {
         return [window.innerWidth, 0.1911 * window.innerHeight];
     }
 
 
-    module.exports = App;
+    module.exports = NewWeek;
 });

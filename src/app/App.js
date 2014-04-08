@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var Transform         = require('famous/core/Transform');
     var View              = require('famous/core/View');
     var ImageSurface      = require('famous/surfaces/ImageSurface');
+    var ContainerSurface  = require('famous/surfaces/ContainerSurface');
     var SequentialLayout  = require('famous/views/SequentialLayout');
 
     var Week              = require('./WeekView')
@@ -22,9 +23,9 @@ define(function(require, exports, module) {
 
         _createHeader.call(this);
         _createWeekView.call(this);
-        _addTaskViews.apply(this, ['Roller Disco Party!']);
-        _addTaskViews.apply(this, ['Fun Times!']);
-        
+        _addTaskViews.apply(this, ['Roller Disco Party!', '08:00', 'PM']);
+        _addTaskViews.apply(this, ['Fun Times!', '08:00', 'AM']);
+
   
         
         _createAccordion.call(this);
@@ -81,19 +82,77 @@ define(function(require, exports, module) {
         this.weekViews.splice(1, 0, this.accordion);
     };
 
-    _addTaskViews = function(text, time) {
+    _addTaskViews = function(text, time, ampm) {
         var taskView = new View();
-        var task = new Surface({
+        var task = new ContainerSurface({
             size : [undefined, 0.1911 * window.innerHeight],
             content: text,
             properties: {
                 backgroundColor: 'white',
-                color: 'brown',
                 fontSize: '3em',
-                textAlign: 'center'
             }
         });
 
+        var text = new Surface({
+            size: [undefined,0],
+            content: text,
+            properties: {
+                color: '#698991',
+                fontSize: '0.37em',
+                left: '34%',
+                top: '38%',
+                fontFamily: 'helvetica'
+            }
+        });
+
+        var timeContainer = new ContainerSurface({
+            size: [50, 26],
+            properties: {
+                backgroundColor: '#fcb530',
+                left: '6%',
+                top: '35%'
+            }
+        });
+
+        var time = new Surface({
+            content: time,
+            properties: {
+                color: 'white',
+                fontSize: '0.35em',
+                left: '10%',
+                top: '10%',
+                fontFamily: 'helvetica'
+            }
+        });
+
+
+
+        timeContainer.add(time);
+
+        var ampm = new Surface({
+            size: [undefined, 0],
+            content: ampm,
+            opacity: 0.5,
+            properties: {
+                color: '#698991',
+                fontSize: '0.04em',
+                left: '24%',
+                top: '42%',
+                fontFamily: 'helvetica'
+            }
+        });
+
+        var line = new Surface({
+            size: [undefined, 1],
+            properties: {
+                opacity: 0.1,
+                backgroundColor: 'black'
+            }
+        });
+        task.add(text);
+        task.add(timeContainer);
+        task.add(ampm);
+        task.add(line);
         taskView._add(task);
 
 
