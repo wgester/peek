@@ -17,6 +17,9 @@ define(function(require, exports, module) {
         this._views = [];
         this._heights = [];
         this._overModifiers = [];
+        this.duration = 0;
+        this.close()
+        this.duration = 600;
     };
 
     function hingeView(renderable, axis) {
@@ -45,6 +48,7 @@ define(function(require, exports, module) {
                 var hingedItem = hingeView.apply(this, [items[i], axis]);
                 this._items.push(hingedItem);
                 this._views.push(hingedItem);
+
                 this._axes.push(axis);
                 if (!axis) axis = 1;
                 else       axis = 0;
@@ -56,7 +60,7 @@ define(function(require, exports, module) {
 
     AccordionLayout.prototype.open = function() {
         this.angle = new Transitionable(Math.PI/2);
-        this.angle.set(0, {duration: 600});
+        this.angle.set(0, {duration: this.duration});
         Engine.on('prerender', function() {
             for (var i = 0; i < this._modifiers.length; i++) {
                 if (this._axes[i]) {
@@ -77,7 +81,7 @@ define(function(require, exports, module) {
 
     AccordionLayout.prototype.close = function() {
         this.angle = new Transitionable(0);
-        this.angle.set(Math.PI/2, {duration: 600});
+        this.angle.set(Math.PI/2, {duration: this.duration});
         Engine.on('prerender', function() {
             for (var i = 0; i < this._modifiers.length; i++) {
                 if (this._axes[i]) {

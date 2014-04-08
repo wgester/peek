@@ -20,17 +20,15 @@ define(function(require, exports, module) {
         this.tasks = [];
 
         this.date = 31;
+        this.opened = false;
 
         _createHeader.call(this);
         _createWeekView.call(this);
         _addTaskViews.apply(this, ['Roller Disco Party!', '08:00', 'PM']);
         _addTaskViews.apply(this, ['Fun Times!', '08:00', 'AM']);
-
   
-        
         _createAccordion.call(this);
         _bindEvents.call(this);
-        this.opened = true;
     };
 
     App.prototype = Object.create(View.prototype);
@@ -48,11 +46,55 @@ define(function(require, exports, module) {
 
 
     _createHeader = function() {
-        this.header = new ImageSurface({
-            size: [undefined, 0.105 * window.innerHeight],
-            content: 'img/header1.png'
+        var sizeModifier = new Modifier({
+            size: [undefined, 0.105 * window.innerHeight]
         });
-        this.add(this.header);
+        this.header = new View();
+        var background = new Surface({
+            properties: {
+                backgroundColor: '#1a2133'
+            }
+        });
+
+        var month = new Surface({
+            content: 'April',
+            size: [50, 20],
+            properties: {
+                color: 'white',
+                fontFamily: 'arial',
+                textAlign: 'center'
+            }
+        });
+        var monthModifier = new Modifier({
+            origin: [0.5, 0.5],
+            opacity: 0.9
+        })
+
+        var year = new Surface({
+            content: '2014',
+            size: [40, 15],
+            properties: {
+                color: '#bacc45',
+                fontFamily: 'arial',
+                textAlign: 'center',
+                fontSize: '0.8em'
+            }
+        });
+
+        var yearModifier = new Modifier({
+            origin: [0.9, 0.5],
+            opacity: 0.4
+        });
+
+        var feather = new ImageSurface({
+            content: 'img/feather.png',
+            size: [0.095 * window.innerHeight,0.095 * window.innerHeight]
+        });
+        this.header._add(background);
+        this.header._add(monthModifier).add(month);
+        this.header._add(yearModifier).add(year);
+        this.header._add(feather);
+        this._add(sizeModifier).add(this.header);
     };
 
     _createWeekView = function() {

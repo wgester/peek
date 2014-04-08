@@ -5,7 +5,7 @@ define(function(require, exports, module) {
     var View             = require('famous/core/View');
 
 
-    function NewWeek(date) {
+    function NewWeek(date, data) {
         View.apply(this, arguments);
 
         this.date = date;
@@ -80,7 +80,8 @@ define(function(require, exports, module) {
             content: date,
             properties: {
                 fontSize: '1.5em',
-                opacity: 0.7
+                opacity: 0.7,
+                fontFamily: 'arial'
             },
             size: [0,0]
         });
@@ -99,7 +100,8 @@ define(function(require, exports, module) {
             content: data.weekDay,
             properties: {
                 fontSize: '0.7em',
-                opacity: 0.7
+                opacity: 0.7,
+                fontFamily: 'arial'
             },
             size: [0,0]
         });
