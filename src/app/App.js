@@ -23,7 +23,9 @@ define(function(require, exports, module) {
         _createHeader.call(this);
         _createWeekView.call(this);
         _addTaskViews.call(this);
-        _addTaskViews.call(this);
+       
+  
+        
         _createAccordion.call(this);
         // this.taskModifiers[0].setSize([undefined, 100], {duration: 0})
         // this.taskModifiers[1].setTransform(Transform.rotateX(-Math.PI * 0.5), {duration: 1000})
