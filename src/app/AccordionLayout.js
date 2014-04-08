@@ -29,21 +29,6 @@ define(function(require, exports, module) {
         var originModifier = new Modifier({
             origin: [0.5, axis]
         });
-        // if (!axis) {
-        //     containerView.getSize = function() {
-        //         return [undefined, height * Math.sin(originModifier.getTransform()[5]/2*Math.PI)];
-        //     };
-        //     // Engine.on('prerender', function() {
-        //     //     sizeModifier.setTransform(Transform.translate(0, height - containerView.getSize()[1], 0))
-        //     // }.bind(this));
-        // } else {
-        //     containerView.getSize = function() {
-        //        return [undefined, height * Math.sin(originModifier.getTransform()[5]/2*Math.PI)];
-        //     };
-        //     Engine.on('prerender', function() {
-        //         sizeModifier.setTransform(Transform.translate(0, -height + containerView.getSize()[1], 0))
-        //     }.bind(this));
-        // }
         this._modifiers.push(originModifier);
         this._overModifiers.push(sizeModifier);
         containerView._add(sizeModifier).add(originModifier).add(renderable);
@@ -70,8 +55,29 @@ define(function(require, exports, module) {
     };
 
     AccordionLayout.prototype.open = function() {
+        this.angle = new Transitionable(Math.PI/2);
+        this.angle.set(0, {duration: 600});
+        Engine.on('prerender', function() {
+            for (var i = 0; i < this._modifiers.length; i++) {
+                if (this._axes[i]) {
+                    this._modifiers[i].setTransform(Transform.rotateX(this.angle.get()));
+                    this._views[i].getSize = function() {
+                        return [undefined, 100 * Math.cos(this.angle.get())];
+                    }.bind(this);
+                    this._overModifiers[i].setTransform(Transform.translate(0, -100 + 100 * Math.cos(this.angle.get()), 0))
+                } else {
+                    this._modifiers[i].setTransform(Transform.rotateX(-this.angle.get()));
+                    this._views[i].getSize = function() {
+                        return [undefined, 100 * Math.cos(this.angle.get())];
+                    }.bind(this);
+                }
+            }
+        }.bind(this));
+    };
+
+    AccordionLayout.prototype.close = function() {
         this.angle = new Transitionable(0);
-        this.angle.set(Math.PI/2, {duration: 3000});
+        this.angle.set(Math.PI/2, {duration: 600});
         Engine.on('prerender', function() {
             for (var i = 0; i < this._modifiers.length; i++) {
                 if (this._axes[i]) {

@@ -23,22 +23,26 @@ define(function(require, exports, module) {
         _createHeader.call(this);
         _createWeekView.call(this);
         _addTaskViews.call(this);
-       
+        _addTaskViews.call(this);
   
         
         _createAccordion.call(this);
-        // this.taskModifiers[0].setSize([undefined, 100], {duration: 0})
-        // this.taskModifiers[1].setTransform(Transform.rotateX(-Math.PI * 0.5), {duration: 1000})
-        // this.taskModifiers[0].setTransform(Transform.aboutOrigin([0,100,0], Transform.rotateX(Math.PI * 0.5)), {duration: 3000})
-        // this.taskModifiers[0].setTransform(Transform.rotateX(Math.PI * 0.5), {duration: 1000});
-        console.log(this.accordion)
-        this.accordion.open();
+        _bindEvents.call(this);
+        this.opened = true;
     };
 
     App.prototype = Object.create(View.prototype);
     App.prototype.constructor = App;
 
     App.DEFAULT_OPTIONS = {};
+
+    _bindEvents = function() {
+        this.header.on('click', function() {
+            if (this.opened) this.accordion.close();
+            else this.accordion.open();
+            this.opened = !this.opened;
+        }.bind(this))  
+    };
 
 
     _createHeader = function() {
