@@ -22,8 +22,9 @@ define(function(require, exports, module) {
 
         _createHeader.call(this);
         _createWeekView.call(this);
-        _addTaskViews.call(this);
-        _addTaskViews.call(this);
+        _addTaskViews.apply(this, ['Roller Disco Party!']);
+        _addTaskViews.apply(this, ['Fun Times!']);
+        
   
         
         _createAccordion.call(this);
@@ -80,15 +81,16 @@ define(function(require, exports, module) {
         this.weekViews.splice(1, 0, this.accordion);
     };
 
-    _addTaskViews = function() {
+    _addTaskViews = function(text, time) {
         var taskView = new View();
         var task = new Surface({
-            size : [window.innerWidth, 100],
-            content: 'here',
+            size : [undefined, 0.1911 * window.innerHeight],
+            content: text,
             properties: {
                 backgroundColor: 'white',
                 color: 'brown',
-                fontSize: '4em'
+                fontSize: '3em',
+                textAlign: 'center'
             }
         });
 

@@ -62,13 +62,13 @@ define(function(require, exports, module) {
                 if (this._axes[i]) {
                     this._modifiers[i].setTransform(Transform.rotateX(this.angle.get()));
                     this._views[i].getSize = function() {
-                        return [undefined, 100 * Math.cos(this.angle.get())];
+                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
                     }.bind(this);
-                    this._overModifiers[i].setTransform(Transform.translate(0, -100 + 100 * Math.cos(this.angle.get()), 0))
+                    this._overModifiers[i].setTransform(Transform.translate(0, -0.1911 * window.innerHeight + 0.1911 * window.innerHeight * Math.cos(this.angle.get()), 0))
                 } else {
                     this._modifiers[i].setTransform(Transform.rotateX(-this.angle.get()));
                     this._views[i].getSize = function() {
-                        return [undefined, 100 * Math.cos(this.angle.get())];
+                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
                     }.bind(this);
                 }
             }
@@ -83,13 +83,13 @@ define(function(require, exports, module) {
                 if (this._axes[i]) {
                     this._modifiers[i].setTransform(Transform.rotateX(this.angle.get()));
                     this._views[i].getSize = function() {
-                        return [undefined, 100 * Math.cos(this.angle.get())];
+                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
                     }.bind(this);
-                    this._overModifiers[i].setTransform(Transform.translate(0, -100 + 100 * Math.cos(this.angle.get()), 0))
+                    this._overModifiers[i].setTransform(Transform.translate(0, -0.1911 * window.innerHeight + 0.1911 * window.innerHeight * Math.cos(this.angle.get()), 0))
                 } else {
                     this._modifiers[i].setTransform(Transform.rotateX(-this.angle.get()));
                     this._views[i].getSize = function() {
-                        return [undefined, 100 * Math.cos(this.angle.get())];
+                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
                     }.bind(this);
                 }
             }

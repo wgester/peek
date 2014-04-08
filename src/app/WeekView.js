@@ -79,7 +79,8 @@ define(function(require, exports, module) {
         var date = new Surface({
             content: date,
             properties: {
-                fontSize: '1.5em'
+                fontSize: '1.5em',
+                opacity: 0.7
             },
             size: [0,0]
         });
@@ -97,7 +98,8 @@ define(function(require, exports, module) {
         var weekDay = new Surface({
             content: data.weekDay,
             properties: {
-                fontSize: '0.7em'
+                fontSize: '0.7em',
+                opacity: 0.7
             },
             size: [0,0]
         });
