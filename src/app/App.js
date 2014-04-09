@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     var AccordionLayout   = require('./AccordionLayout');
 
     var RenderNode        = require('famous/core/RenderNode');
+    require('famous/inputs/FastClick')
 
     function App() {
         View.apply(this, arguments);

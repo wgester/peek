@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var Transform        = require('famous/core/Transform');
     var Engine           = require('famous/core/Engine');
     var Transitionable   = require('famous/transitions/Transitionable');
+    require('famous/inputs/FastClick');
   
     function AccordionLayout() {
         SequentialLayout.apply(this, arguments);
