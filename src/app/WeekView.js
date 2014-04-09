@@ -13,6 +13,8 @@ define(function(require, exports, module) {
         _createBackground.call(this);
         _addBorder.call(this);
         _addDays.call(this);
+
+        this.clicked = false;
     };
 
     NewWeek.prototype = Object.create(View.prototype);
@@ -65,6 +67,18 @@ define(function(require, exports, module) {
             if (this.date === 6 && i === 6) {
                 daySurface.on('click', function() {
                     this._eventOutput.emit('clicked');
+                    if (this.clicked) {
+                        this.highlightModifier.setOpacity(0.001);
+                        this.dateSurface.setProperties({
+                             color: 'white'
+                        });
+                    } else {
+                        this.highlightModifier.setOpacity(1);
+                        this.dateSurface.setProperties({
+                             color: '#3b6d7d'
+                        });
+                    }
+                    this.clicked = !this.clicked;
                 }.bind(this));
                 daySurface.pipe(this);
             }
@@ -89,8 +103,22 @@ define(function(require, exports, module) {
             },
             size: [0,0]
         });
+        if (this.date === 6) {
+            this.dateSurface = date;
+            this.highlight = new Surface({
+                size: [30,25],
+                properties: {
+                    backgroundColor: 'white'
+                }
+            });
+            this.highlightModifier = new Modifier({
+                transform: Transform.translate(0.18 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.105 * window.innerHeight, 0),
+                opacity: 0.001
+            });
+            data.dayView._add(this.highlightModifier).add(this.highlight);
+        }
         var dateModifier = new Modifier({
-            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.11 * window.innerHeight, 0),
+            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.11 * window.innerHeight, 1),
             opacity: 0.8
         });
         if (this.differentMonth && this.date === 31) {dateModifier.setOpacity(0.4)}; 
