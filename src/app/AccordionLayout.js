@@ -19,7 +19,7 @@ define(function(require, exports, module) {
         this._overModifiers = [];
         this.duration = 0;
         this.close()
-        this.duration = 600;
+        this.duration = 500;
     };
 
     function hingeView(renderable, axis) {

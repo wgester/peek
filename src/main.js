@@ -10,5 +10,4 @@ define(function(require, exports, module) {
     mainContext.add(app);
 
     mainContext.setPerspective(1000);
-    
 });

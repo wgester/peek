@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var ImageSurface      = require('famous/surfaces/ImageSurface');
     var ContainerSurface  = require('famous/surfaces/ContainerSurface');
     var SequentialLayout  = require('famous/views/SequentialLayout');
+    var Engine            = require('famous/core/Engine');
 
     var Week              = require('./WeekView')
     var AccordionLayout   = require('./AccordionLayout');
@@ -21,11 +22,13 @@ define(function(require, exports, module) {
 
         this.date = 31;
         this.opened = false;
+        this.throttled = false;
 
         _createHeader.call(this);
         _createWeekView.call(this);
         _addTaskViews.apply(this, ['Roller Disco Party!', '08:00', 'PM']);
         _addTaskViews.apply(this, ['Fun Times!', '08:00', 'AM']);
+
   
         _createAccordion.call(this);
         _bindEvents.call(this);
@@ -37,10 +40,14 @@ define(function(require, exports, module) {
     App.DEFAULT_OPTIONS = {};
 
     _bindEvents = function() {
-        this._eventInput.on('clicked', function() {
-            if (this.opened) this.accordion.close();
-            else this.accordion.open();
-            this.opened = !this.opened;
+        Engine.on('click', function() {
+            if (!this.throttled) {
+                if (this.opened) this.accordion.close();
+                else this.accordion.open();
+                this.opened = !this.opened;
+                this.throttled = true;
+                window.setTimeout(function(){this.throttled = false}.bind(this), 500);
+            }
         }.bind(this))  
     };
 
@@ -116,7 +123,6 @@ define(function(require, exports, module) {
             }
             this.date += 7;
             differentMonth = false;
-            week.pipe(this._eventInput);
         }
         this.layout.sequenceFrom(this.weekViews);
         this._add(layoutModifier).add(this.layout);

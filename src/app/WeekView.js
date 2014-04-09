@@ -3,6 +3,7 @@ define(function(require, exports, module) {
     var Modifier         = require('famous/core/Modifier');
     var Transform        = require('famous/core/Transform');
     var View             = require('famous/core/View');
+    var Engine           = require('famous/core/Engine');
 
 
     function NewWeek(date, differentMonth) {
@@ -65,22 +66,24 @@ define(function(require, exports, module) {
                 transform: Transform.translate(i * window.innerWidth/7, 0, 0)
             });
             if (this.date === 6 && i === 6) {
-                daySurface.on('click', function() {
-                    this._eventOutput.emit('clicked');
-                    if (this.clicked) {
-                        this.highlightModifier.setOpacity(0.001);
-                        this.dateSurface.setProperties({
-                             color: 'white'
-                        });
-                    } else {
-                        this.highlightModifier.setOpacity(1);
-                        this.dateSurface.setProperties({
-                             color: '#3b6d7d'
-                        });
+                Engine.on('click', function() {
+                    if (!this.throttled) {
+                        if (this.clicked) {
+                            this.highlightModifier.setOpacity(0.001);
+                            this.dateSurface.setProperties({
+                                 color: 'white'
+                            });
+                        } else {
+                            this.highlightModifier.setOpacity(1);
+                            this.dateSurface.setProperties({
+                                 color: '#3b6d7d'
+                            });
+                        }
+                        this.throttled = true;
+                        window.setTimeout(function(){this.throttled = false;}.bind(this), 500);
+                        this.clicked = !this.clicked;
                     }
-                    this.clicked = !this.clicked;
                 }.bind(this));
-                daySurface.pipe(this);
             }
             _addDateText.call(this, {dayView: day, i: i});
             _addWeekDayText.call(this, {dayView: day, weekDay: weekDay[i], i: i});
