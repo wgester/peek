@@ -37,7 +37,7 @@ define(function(require, exports, module) {
     App.DEFAULT_OPTIONS = {};
 
     _bindEvents = function() {
-        this.header.on('click', function() {
+        this._eventInput.on('clicked', function() {
             if (this.opened) this.accordion.close();
             else this.accordion.open();
             this.opened = !this.opened;
@@ -103,8 +103,11 @@ define(function(require, exports, module) {
             transform: Transform.translate(0, 0.105 * window.innerHeight, 0)
         });
         for (var i = 0; i < 5; i++) {
+            if (this.date > 27) {
+                var differentMonth = true;
+            }
             var weekView = new View();
-            var week = new Week(this.date);
+            var week = new Week(this.date, differentMonth);
             var weekModifier = new Modifier();
             weekView._add(weekModifier).add(week);
             this.weekViews.push(weekView);
@@ -112,6 +115,8 @@ define(function(require, exports, module) {
                 this.date = 0;
             }
             this.date += 7;
+            differentMonth = false;
+            week.pipe(this._eventInput);
         }
         this.layout.sequenceFrom(this.weekViews);
         this._add(layoutModifier).add(this.layout);

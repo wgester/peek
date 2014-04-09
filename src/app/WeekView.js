@@ -5,11 +5,11 @@ define(function(require, exports, module) {
     var View             = require('famous/core/View');
 
 
-    function NewWeek(date, data) {
+    function NewWeek(date, differentMonth) {
         View.apply(this, arguments);
 
         this.date = date;
-
+        this.differentMonth = differentMonth;
         _createBackground.call(this);
         _addBorder.call(this);
         _addDays.call(this);
@@ -62,7 +62,12 @@ define(function(require, exports, module) {
             var dayModifier = new Modifier({
                 transform: Transform.translate(i * window.innerWidth/7, 0, 0)
             });
-            
+            if (this.date === 6 && i === 6) {
+                daySurface.on('click', function() {
+                    this._eventOutput.emit('clicked');
+                }.bind(this));
+                daySurface.pipe(this);
+            }
             _addDateText.call(this, {dayView: day, i: i});
             _addWeekDayText.call(this, {dayView: day, weekDay: weekDay[i], i: i});
             this._add(dayModifier).add(daySurface);
@@ -79,17 +84,20 @@ define(function(require, exports, module) {
         var date = new Surface({
             content: date,
             properties: {
-                fontSize: '1.5em',
-                opacity: 0.7,
+                fontSize: '1.2em',
                 fontFamily: 'arial'
             },
             size: [0,0]
         });
         var dateModifier = new Modifier({
-            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.11 * window.innerHeight, 0)
+            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.11 * window.innerHeight, 0),
+            opacity: 0.8
         });
+        if (this.differentMonth && this.date === 31) {dateModifier.setOpacity(0.4)}; 
+        if (this.differentMonth && this.date < 10) {dateModifier.setOpacity(0.4)}; 
         data.dayView._add(dateModifier).add(date);
-        if (this.date > 30) {
+        if (this.date > 29) {
+            if (this.date === 31) this.differentMonth = false;
             this.date = 0;
         }
         this.date += 1;
@@ -99,14 +107,14 @@ define(function(require, exports, module) {
         var weekDay = new Surface({
             content: data.weekDay,
             properties: {
-                fontSize: '0.7em',
-                opacity: 0.7,
+                fontSize: '0.5em',
+                opacity: 0.6,
                 fontFamily: 'arial'
             },
             size: [0,0]
         });
         var weekDayModifier = new Modifier({
-            transform: Transform.translate(0.25 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.08 * window.innerHeight, 0)
+            transform: Transform.translate(0.28 * (window.innerWidth / 7) + data.i * window.innerWidth / 7, 0.08 * window.innerHeight, 0)
         });
         data.dayView._add(weekDayModifier).add(weekDay);
     };
