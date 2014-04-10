@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     var AccordionLayout   = require('./AccordionLayout');
 
     var RenderNode        = require('famous/core/RenderNode');
+    
     require('famous/inputs/FastClick')
 
     function App() {
@@ -57,52 +58,22 @@ define(function(require, exports, module) {
         var sizeModifier = new Modifier({
             size: [undefined, 0.105 * window.innerHeight]
         });
-        this.header = new View();
-        var background = new Surface({
-            properties: {
-                backgroundColor: '#1a2133'
-            }
+
+        var header = new View();
+
+        var headerSurface = new Surface({
+            content: headerTemplate(),
+            classes: ['header']
         });
 
-        var month = new Surface({
-            content: 'April',
-            size: [50, 20],
-            properties: {
-                color: 'white',
-                fontFamily: 'arial',
-                textAlign: 'center'
-            }
-        });
-        var monthModifier = new Modifier({
-            origin: [0.5, 0.5],
-            opacity: 0.9
-        })
+        function headerTemplate() {
+            return '<img class="feather" style="height:' + 0.095 * window.innerHeight + 'px";width:' + 0.095 * window.innerHeight +'px" src="img/feather.png"></img>' +
+            '<div class="month" style="margin-left:' + 0.3125 * window.innerWidth  + 'px">April</div>' +
+            '<div class="year">2014</div>';
+        };
 
-        var year = new Surface({
-            content: '2014',
-            size: [40, 15],
-            properties: {
-                color: '#bacc45',
-                fontFamily: 'arial',
-                textAlign: 'center',
-                fontSize: '0.8em'
-            }
-        });
-
-        var yearModifier = new Modifier({
-            origin: [0.9, 0.5],
-            opacity: 0.4
-        });
-
-        var feather = new ImageSurface({
-            content: 'img/feather.png',
-            size: [0.095 * window.innerHeight,0.095 * window.innerHeight]
-        });
-        this.header._add(background);
-        this.header._add(monthModifier).add(month);
-        this.header._add(yearModifier).add(year);
-        this.header._add(feather);
-        this._add(sizeModifier).add(this.header);
+        header._add(headerSurface);
+        this._add(sizeModifier).add(header);
     };
 
     _createWeekView = function() {
@@ -217,7 +188,3 @@ define(function(require, exports, module) {
 
     module.exports = App;
 });
-
-//lighter bacc45
-//darker  b0ba45
-//0.1911

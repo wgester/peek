@@ -2,3 +2,24 @@ html {
     background-color: #000;
     color: #fff;
 } 
+
+.header {
+  background-color: #1a2133;
+  display: flex;
+}
+
+.month {
+  color: 'white';
+  font-family: 'arial';
+  opacity: 0.8;
+  margin: auto;
+}
+
+.year {
+  color: #bacc45;
+  font-family: 'arial';
+  font-size: 0.8em;
+  margin: auto;
+  width: 1px;
+  opacity: 0.4;
+}

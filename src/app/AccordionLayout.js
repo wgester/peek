@@ -1,4 +1,5 @@
 define(function(require, exports, module) {
+    var Utility          = require('famous/utilities/Utility');
     var OptionsManager   = require('famous/core/OptionsManager');
     var SequentialLayout = require('famous/views/SequentialLayout');
     var ViewSequence     = require('famous/core/ViewSequence');
@@ -19,6 +20,7 @@ define(function(require, exports, module) {
         this._heights = [];
         this._overModifiers = [];
         this.duration = 0;
+        this.angle = new Transitionable(Math.PI/2);
         this.close()
         this.duration = 500;
     };
@@ -39,6 +41,23 @@ define(function(require, exports, module) {
         return containerView;
     };
 
+    function _attachModifiers() {
+        for (var i = 0; i < this._modifiers.length; i++) {
+            if (this._axes[i]) {
+                this._modifiers[i].transformFrom(function() {
+                    return Transform.rotateX(this.angle.get());
+                }.bind(this));
+                this._overModifiers[i].transformFrom(function() {
+                    return Transform.translate(0, -0.1911 * window.innerHeight + 0.1911 * window.innerHeight * Math.cos(this.angle.get()), 0);
+                }.bind(this));
+            } else {
+                this._modifiers[i].transformFrom(function() {
+                    return Transform.rotateX(-this.angle.get());
+                }.bind(this));
+            }
+        }
+    }
+
 
     AccordionLayout.prototype = Object.create(SequentialLayout.prototype);
 
@@ -56,49 +75,61 @@ define(function(require, exports, module) {
             }
             this._items = new ViewSequence(this._items)
         }
+        _attachModifiers.call(this);
         return this;
     };
 
     AccordionLayout.prototype.open = function() {
-        this.angle = new Transitionable(Math.PI/2);
+        this.angle.set(Math.PI/2);
         this.angle.set(0, {duration: this.duration});
-        Engine.on('prerender', function() {
-            for (var i = 0; i < this._modifiers.length; i++) {
-                if (this._axes[i]) {
-                    this._modifiers[i].setTransform(Transform.rotateX(this.angle.get()));
-                    this._views[i].getSize = function() {
-                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
-                    }.bind(this);
-                    this._overModifiers[i].setTransform(Transform.translate(0, -0.1911 * window.innerHeight + 0.1911 * window.innerHeight * Math.cos(this.angle.get()), 0))
-                } else {
-                    this._modifiers[i].setTransform(Transform.rotateX(-this.angle.get()));
-                    this._views[i].getSize = function() {
-                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
-                    }.bind(this);
-                }
-            }
-        }.bind(this));
     };
 
     AccordionLayout.prototype.close = function() {
-        this.angle = new Transitionable(0);
+        this.angle.set(0);
         this.angle.set(Math.PI/2, {duration: this.duration});
-        Engine.on('prerender', function() {
-            for (var i = 0; i < this._modifiers.length; i++) {
-                if (this._axes[i]) {
-                    this._modifiers[i].setTransform(Transform.rotateX(this.angle.get()));
-                    this._views[i].getSize = function() {
-                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
-                    }.bind(this);
-                    this._overModifiers[i].setTransform(Transform.translate(0, -0.1911 * window.innerHeight + 0.1911 * window.innerHeight * Math.cos(this.angle.get()), 0))
-                } else {
-                    this._modifiers[i].setTransform(Transform.rotateX(-this.angle.get()));
-                    this._views[i].getSize = function() {
-                        return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
-                    }.bind(this);
-                }
-            }
-        }.bind(this));
+    };
+
+    AccordionLayout.prototype.render = function render() {
+        var length = 0;
+        var girth = 0;
+
+        var lengthDim = (this.options.direction === Utility.Direction.X) ? 0 : 1;
+        var girthDim = (this.options.direction === Utility.Direction.X) ? 1 : 0;
+
+        var currentNode = this._items;
+        var result = [];
+        while (currentNode) {
+            var item = currentNode.get();
+
+            var itemSize;
+            if (item && item.getSize) itemSize = item.getSize();
+            if (!itemSize) itemSize = this.options.defaultItemSize;
+            if (itemSize[girthDim] !== true) girth = Math.max(girth, itemSize[girthDim]);
+
+            var output = this._outputFunction.call(this, item, length, result.length);
+            result.push(output);
+
+            if (itemSize[lengthDim] && (itemSize[lengthDim] !== true)) length += itemSize[lengthDim];
+            currentNode = currentNode.getNext();
+        }
+
+        if (!girth) girth = undefined;
+
+        if (!this._size) this._size = [0, 0];
+        this._size[lengthDim] = length;
+        this._size[girthDim] = girth;
+
+
+        for (var i = 0; i < this._modifiers.length; i++) {
+            this._views[i].getSize = function() {
+                return [undefined, 0.1911 * window.innerHeight * Math.cos(this.angle.get())];
+            }.bind(this);
+        }
+
+        return {
+            size: this.getSize(),
+            target: result
+        };
     };
 
 
