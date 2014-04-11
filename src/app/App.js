@@ -28,9 +28,8 @@ define(function(require, exports, module) {
 
         _createHeader.call(this);
         _createWeekView.call(this);
-        _addTaskViews.apply(this, ['Roller Disco Party!', '08:00', 'PM']);
-        _addTaskViews.apply(this, ['Fun Times!', '08:00', 'AM']);
-
+        _addTaskViews.call(this, 'RollerDiscoParty');
+        _addTaskViews.call(this, 'FunTimes');
   
         _createAccordion.call(this);
         _bindEvents.call(this);
@@ -101,88 +100,41 @@ define(function(require, exports, module) {
     };
 
     _createAccordion = function() {
-        this.accordion = new AccordionLayout({direction: 'x'});
+        this.accordion = new AccordionLayout({direction: 'x', curve: 'linear', duration: 400});
         this.accordion.sequenceFrom(this.tasks);
 
         this.weekViews.splice(1, 0, this.accordion);
     };
 
-    _addTaskViews = function(text, time, ampm) {
+    _addTaskViews = function(img) {
         var taskView = new View();
         
-        var task = new ContainerSurface({
-            size : [undefined, 0.1911 * window.innerHeight],
-            content: text,
-            properties: {
-                backgroundColor: 'white',
-                fontSize: '3em',
-            }
+        var subView = new View();
+
+        var taskImage = new ImageSurface({
+            content: 'img/' + img +'.png'
         });
 
-        var text = new Surface({
-            size: [undefined,0],
-            content: text,
-            properties: {
-                color: '#698991',
-                fontSize: '0.37em',
-                left: '34%',
-                top: '38%',
-                fontFamily: 'helvetica'
-            }
+        var taskImageModifier = new Modifier({
+            size: [undefined, 0.19 * window.innerHeight]
+        });
+        var taskImage2 = new ImageSurface({
+            content: 'img/' + img + 'Shaded.png'
         });
 
-        var timeContainer = new ContainerSurface({
-            size: [50, 26],
-            properties: {
-                backgroundColor: '#fcb530',
-                left: '6%',
-                top: '35%'
-            }
+        this.taskImageModifier2 = new Modifier({
+            opacity: 0
         });
-
-        var time = new Surface({
-            content: time,
-            properties: {
-                color: 'white',
-                fontSize: '0.35em',
-                left: '10%',
-                top: '10%',
-                fontFamily: 'helvetica'
-            }
-        });
+        this.taskImageModifier2.opacityFrom(function() {
+            return Math.sin(this.accordion.angle.get())
+        }.bind(this));
 
 
-
-        timeContainer.add(time);
-
-        var ampm = new Surface({
-            size: [undefined, 0],
-            content: ampm,
-            opacity: 0.5,
-            properties: {
-                color: '#698991',
-                fontSize: '0.04em',
-                left: '24%',
-                top: '42%',
-                fontFamily: 'helvetica'
-            }
-        });
-
-        var line = new Surface({
-            size: [undefined, 1],
-            properties: {
-                opacity: 0.1,
-                backgroundColor: 'black'
-            }
-        });
-        task.add(text);
-        task.add(timeContainer);
-        task.add(ampm);
-        task.add(line);
-        taskView._add(task);
-
-
+        subView._add(taskImage);
+        subView._add(this.taskImageModifier2).add(taskImage2);
+        taskView._add(taskImageModifier).add(subView);
         this.tasks.push(taskView);
+
 
     };
 
