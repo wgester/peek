@@ -101,7 +101,7 @@ define(function(require, exports, module) {
     };
 
     _createAccordion = function() {
-        this.accordion = new AccordionLayout();
+        this.accordion = new AccordionLayout({direction: 'x'});
         this.accordion.sequenceFrom(this.tasks);
 
         this.weekViews.splice(1, 0, this.accordion);
@@ -109,6 +109,7 @@ define(function(require, exports, module) {
 
     _addTaskViews = function(text, time, ampm) {
         var taskView = new View();
+        
         var task = new ContainerSurface({
             size : [undefined, 0.1911 * window.innerHeight],
             content: text,
