@@ -13,7 +13,7 @@ define(function(require, exports, module) {
         if (options.direction === 'y') options.direction = 0; 
         if (options.direction === 'x') options.direction = 1;
 
-        SequentialLayout.apply(this, arguments);
+        SequentialLayout.apply(this, options);
         this.setOptions(AccordionLayout.DEFAULT_OPTIONS);
 
         if (options) this.setOptions(options);

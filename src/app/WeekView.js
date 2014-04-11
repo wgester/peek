@@ -98,6 +98,7 @@ define(function(require, exports, module) {
         } else {
             var date = this.date;
         }
+
         var date = new Surface({
             content: date,
             properties: {
@@ -106,6 +107,7 @@ define(function(require, exports, module) {
             },
             size: [0,0]
         });
+
         if (this.date === 6) {
             this.dateSurface = date;
             this.highlight = new Surface({
