@@ -30,6 +30,8 @@ define(function(require, exports, module) {
         _createWeekView.call(this);
         _addTaskViews.call(this, 'RollerDiscoParty');
         _addTaskViews.call(this, 'FunTimes');
+
+
        
   
         _createAccordion.call(this);
@@ -105,7 +107,7 @@ define(function(require, exports, module) {
             direction: 'x', 
             transition: {
                 curve: 'easeOut',
-                duration: 400
+                duration: 1000
             }
         });
         this.accordion.sequenceFrom(this.tasks);

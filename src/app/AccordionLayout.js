@@ -1,12 +1,9 @@
 define(function(require, exports, module) {
     var Utility          = require('famous/utilities/Utility');
-    var OptionsManager   = require('famous/core/OptionsManager');
     var SequentialLayout = require('famous/views/SequentialLayout');
     var ViewSequence     = require('famous/core/ViewSequence');
-    var View             = require('famous/core/View');
-    var Modifier         = require('famous/core/Modifier');
-    var Transform        = require('famous/core/Transform');
     var Transitionable   = require('famous/transitions/Transitionable');
+    var Hinge      = require('./Hinge');
 
   
     function AccordionLayout(options) {
@@ -36,80 +33,36 @@ define(function(require, exports, module) {
         }
     };
 
-    function hingeView(renderable, axis) {
-        var size = renderable.getSize()[this.options.direction];
-        this._sizes.push(size);
-        var hingeView = new View();
-        var origin = this.options.direction ? [0.5, axis] : [axis, 0.5];
-        var size = this.options.direction ? [undefined, size] : [size, undefined];
-
-        var originModifier = new Modifier({
-            origin: origin
-        });
-        var sizeModifier = new Modifier({
-            size: size
-        });
-        var viewSizeModifier = new Modifier({
-            size: size
-        });
-
-        this._modifiers.push(originModifier);
-        this._overModifiers.push(sizeModifier);
-        this._viewSizeModifiers.push(viewSizeModifier);
-        hingeView._add(viewSizeModifier).add(sizeModifier).add(originModifier).add(renderable);
-        return hingeView;
-    };
-
-    function _attachModifiers() {
-        for (var i = 0; i < this._modifiers.length; i++) {
-            if (i % 2) {
-                this._modifiers[i].transformFrom(function() {
-                    return this.options.direction ? Transform.rotateX(this.angle.get()) : Transform.rotateY(this.angle.get());
-                }.bind(this));
-                this._overModifiers[i].transformFrom(function(i) {
-                    var translation = this._sizes[i] * Math.cos(this.angle.get()) - this._sizes[i];
-                    return this.options.direction ? Transform.translate(0, translation, 0) : Transform.translate(translation, 0, 0);
-                }.bind(this, i));
-            } else {
-                this._modifiers[i].transformFrom(function() {
-                    return this.options.direction ? Transform.rotateX(-this.angle.get()) : Transform.rotateY(-this.angle.get());
-                }.bind(this));
-            }
-            this._viewSizeModifiers[i].sizeFrom(function(i) {
-                var newSize = this._sizes[i] * Math.cos(this.angle.get());
-                return this.options.direction ? [undefined, newSize] : [newSize, undefined];
-            }.bind(this, i));
-        }
-    };
-
-    function _getAngle() {
-        return this.angle.get();
-    };
 
     AccordionLayout.prototype = Object.create(SequentialLayout.prototype);
 
     AccordionLayout.prototype.sequenceFrom = function(items) {
         if (items instanceof Array) {
-            var axis = 0;
             for (var i = 0; i < items.length; i++) {
-                var hingedItem = hingeView.apply(this, [items[i], axis]);
+                if (i % 2) {
+                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2, axis: 1, anchor: 1})
+                } else {
+                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2})
+                    
+                }
                 this._items.push(hingedItem);
                 this._views.push(hingedItem);
-                axis = axis ? 0 : 1;
             }
             this._items = new ViewSequence(this._items)
         }
-        _attachModifiers.call(this);
         return this;
     };
 
     AccordionLayout.prototype.open = function() {
-            this.angle.set(0, this.options.transition);
+        for (var i = 0; i < this._views.length; i++) {
+            this._views[i].setAngle(0);
+        }
     };
 
     AccordionLayout.prototype.close = function() {
-        var angle = this.options.direction ? Math.PI/2 : -Math.PI/2;
-            this.angle.set(angle, this.options.transition);
+        for (var i = 0; i < this._views.length; i++) {
+            this._views[i].setAngle(Math.PI/2);
+        }
     };
 
     module.exports = AccordionLayout;
