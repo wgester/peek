@@ -80,7 +80,7 @@ define(function(require, exports, module) {
                             });
                         }
                         this.throttled = true;
-                        window.setTimeout(function(){this.throttled = false;}.bind(this), 500);
+                        window.setTimeout(function(){this.throttled = false;}.bind(this), 700);
                         this.clicked = !this.clicked;
                     }
                 }.bind(this));

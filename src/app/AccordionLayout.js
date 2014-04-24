@@ -17,10 +17,6 @@ define(function(require, exports, module) {
 
         this._items = [];
         this._views = [];
-        this._sizes = [];
-        this._modifiers = [];
-        this._overModifiers = [];
-        this._viewSizeModifiers = [];
 
         this.angle = this.options.direction ? new Transitionable(Math.PI/2) : new Transitionable(-Math.PI/2);
     };
@@ -40,9 +36,9 @@ define(function(require, exports, module) {
         if (items instanceof Array) {
             for (var i = 0; i < items.length; i++) {
                 if (i % 2) {
-                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2, axis: 1, anchor: 1})
+                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2, axis: 1, anchor: 1, transition: this.options.transition});
                 } else {
-                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2})
+                    var hingedItem = new Hinge(items[i], {angle: Math.PI/2, transition: this.options.transition});
                     
                 }
                 this._items.push(hingedItem);
@@ -57,12 +53,14 @@ define(function(require, exports, module) {
         for (var i = 0; i < this._views.length; i++) {
             this._views[i].setAngle(0);
         }
+        this.angle.set(0, this.options.transition);
     };
 
     AccordionLayout.prototype.close = function() {
         for (var i = 0; i < this._views.length; i++) {
             this._views[i].setAngle(Math.PI/2);
         }
+        this.angle.set(Math.PI/2, this.options.transition);
     };
 
     module.exports = AccordionLayout;

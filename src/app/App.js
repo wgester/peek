@@ -107,7 +107,7 @@ define(function(require, exports, module) {
             direction: 'x', 
             transition: {
                 curve: 'easeOut',
-                duration: 1000
+                duration: 700
             }
         });
         this.accordion.sequenceFrom(this.tasks);
